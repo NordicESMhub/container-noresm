@@ -21,19 +21,19 @@ docker pull quay.io/nordicesmhub/container-noresm:v1.0.0
 
 ### Pull singularity container
 
-We can then pull the image to generate a singularity container:
+We can then pull the image to generate a singularity image:
 
 ```
 singularity pull docker://quay.io/nordicesmhub/container-noresm:v1.0.0
 ```
 
-The previous command generates `container-noresm_v1.0.0.sif` that is ready to be run on your HPC.
+The previous command generates `container-noresm_v1.0.0.sif` that is ready to be run on your HPC, desktop/laptop, etc.
 
 ### Create NorESM case, compile and prepare input data
 
-We will be using [Betzy](https://documentation.sigma2.no/hpc_machines/betzy.html), the most powerful supercomuter in Norway (2021) and prepare a case for running on one single node e.g. 128 processors. 
+We will be using [Betzy](https://documentation.sigma2.no/hpc_machines/betzy.html), the most powerful supercomputer in Norway (2021) and prepare a case for running on one single node e.g. 128 processors. 
 
-The creation, compilation and preparation of input data can be done interactively on an interactive node on betzy. All NorESM input data are made available in `/cluster/shared/noresm/inputdata` and this is why we are binding this folder to  `/opt/esm/inputdata`. We also want to make sure we can access both the working and archive directories so these two folders are binded to `$USERWORK/work` and `$USERWORK/archive` respectively. Please note that at this stage only the working directory will be used.
+The creation, setup and compilation of the case as well as a check of the availability of the necessary of the input data can be done interactively on an interactive node on Betzy. All NorESM/CESM input data can be found in `/cluster/shared/noresm/inputdata` and this is why we are binding this folder to  `/opt/esm/inputdata`. We also want to make sure we can access both the work and archive directories so these two folders are bound to `$USERWORK/work` and `$USERWORK/archive`, respectively. Please note that at this stage only the work directory will be used.
 
 ```
 export COMPSET='NF2000climo'
@@ -44,9 +44,9 @@ echo $CASENAME
 singularity exec --bind $USERWORK/work:/opt/esm/work,/cluster/shared/noresm/inputdata:/opt/esm/inputdata,$USERWORK/archive:/opt/esm/archive container-noresm_v1.0.0.sif /opt/esm/prepare
 ```
 
-The script `prepare` is available in this repository.
+An example of the script `prepare` is available in the container (and also in this repository).
 
-Once it is successfully completed, we can then run the norESM model (corresponding to `case.submit`). Below is an example of the slurm job we used to run on Betzy:
+Once it is successfully completed, we can then run the NorESM model (corresponding to `case.submit`). Below is an example of the slurm job we used to run on Betzy:
 
 
 ```
@@ -54,10 +54,10 @@ Once it is successfully completed, we can then run the norESM model (correspondi
 #
 #SBATCH --account=nn9560k
 #SBATCH --job-name=noresm-gnu-container-mpich
-#SBATCH --time=08:00:00
-#SBATCH --nodes=4
+#SBATCH --time=01:00:00
+#SBATCH --nodes=1
 #SBATCH --tasks-per-node=128
-##SBATCH --qos=devel
+#SBATCH --qos=devel
 #SBATCH --export=ALL
 #SBATCH --switches=1
 #SBATCH --exclusive
@@ -76,3 +76,7 @@ mpirun -np $SLURM_NTASKS singularity exec --bind $USERWORK/work:/opt/esm/work,/c
 ```
 
 Once finalized, the results of your norESM run is available on betzy in `$USERWORK/archive`.
+
+The timing information (including model cost, throughput, etc.) can be found in a folder called `timing` in the case directory:
+
+
