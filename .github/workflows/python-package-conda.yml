@@ -4,6 +4,9 @@ on: [push]
 
 jobs:
   build-linux:
+    env:
+      context: container-noresm
+      image_name: container-noresm
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
