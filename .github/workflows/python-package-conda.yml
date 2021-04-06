@@ -45,3 +45,7 @@ jobs:
       with:
         path: ${{ env.context }}
         registry: ${{ secrets.REGISTRY_SERVER }}
+        repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.image_name }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+        tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
