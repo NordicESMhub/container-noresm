@@ -24,3 +24,21 @@ jobs:
     - name: Create Dockerfile with hpccm
       run: |
         hpccm --recipe noresm_gnu.py --format docker > Dockerfile
+    - name: Get image tags
+      id: image_tags
+      run: |
+        echo -n ::set-output name=IMAGE_TAGS::
+        VERSION=$(jq -r '.version' ${context}/version.json)
+        TAGS=('latest')
+        if [ "${VERSION}" ] && [ "${VERSION}" != "latest" ]; then
+            TAGS+=("${VERSION}")
+        fi
+        if [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
+            TAGS+=("git-${BASH_REMATCH[1]}")
+        fi
+        ( IFS=$','; echo "${TAGS[*]}" )
+    - name: Build and publish image to Quay
+      uses: docker/build-push-action@v1
+      with:
+        path: ${{ env.context }}
+        registry: ${{ secrets.REGISTRY_SERVER }}
