@@ -1,0 +1,9 @@
+#!/bin/bash
+
+ulimit -s unlimited
+
+cd /opt/esm/work/$CASENAME/run && /opt/esm/work/$CASENAME/bld/cesm.exe
+
+export LID=$(date +'%y%m%d.%H%M%S')
+echo $LID
+/opt/esm/my_sandbox/cime/scripts/Tools/getTiming --lid $LID --caseroot /opt/esm/archive/cases/$CASENAME

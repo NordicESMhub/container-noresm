@@ -1,0 +1,20 @@
+#!/bin/bash
+
+cp -r /opt/esm/.cime/* $HOME/.cime
+
+cd /opt/esm/my_sandbox/cime/scripts
+./create_newcase --case /opt/esm/archive/cases/$CASENAME --compset $COMPSET --res $RES --machine container --run-unsupported --handle-preexisting-dirs r --pesfile /opt/esm/config_pes.xml
+
+cd /opt/esm/archive/cases/$CASENAME
+
+./xmlchange STOP_N=1
+./xmlchange STOP_OPTION=nmonths
+
+./case.setup
+./case.build --skip-provenance-check
+
+mkdir -p /opt/esm/work/$CASENAME/run/timing/checkpoints
+
+./check_input_data --download
+./check_case
+
