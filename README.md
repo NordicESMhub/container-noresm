@@ -1,5 +1,8 @@
 # container-noresm
+
 Containers (docker &amp; singularity) for NorESM, the Norwegian Earth System Model.
+
+[![DOI](https://zenodo.org/badge/355181297.svg)](https://zenodo.org/badge/latestdoi/355181297)
 
 ## hpccm to create Dockerfile and associated containers
 
