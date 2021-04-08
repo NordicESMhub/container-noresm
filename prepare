@@ -1,9 +1,11 @@
 #!/bin/bash
 
 cp -r /opt/esm/.cime/* $HOME/.cime
+cp /opt/esm/config_pes.xml /opt/esm/archive/config_pes.xml
+sed -i -e "s/-1/-$SLURM_JOB_NUM_NODES/g" /opt/esm/archive/config_pes.xml
 
 cd /opt/esm/my_sandbox/cime/scripts
-./create_newcase --case /opt/esm/archive/cases/$CASENAME --compset $COMPSET --res $RES --machine container --run-unsupported --handle-preexisting-dirs r --pesfile /opt/esm/config_pes.xml
+./create_newcase --case /opt/esm/archive/cases/$CASENAME --compset $COMPSET --res $RES --machine container --run-unsupported --handle-preexisting-dirs r --pesfile /opt/esm/archive/config_pes.xml
 
 cd /opt/esm/archive/cases/$CASENAME
 
