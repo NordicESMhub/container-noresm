@@ -1,0 +1,52 @@
+name: Python Package using Conda
+
+on: [push]
+
+jobs:
+  build-linux:
+    env:
+      context: .
+      image_name: container-noresm
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
+    - name: Install dependencies
+      run: |
+        conda env update --file environment.yml --name base
+    - name: Create Dockerfile with hpccm
+      working-directory: ./gnu_openmpi
+      run: |
+        hpccm --recipe v3-noresm204_gnu102_openmpi410_slurm20116.py --format docker > Dockerfile
+    - name: Get image tags
+      id: image_tags
+      run: |
+        echo -n ::set-output name=IMAGE_TAGS::
+        VERSION=$(jq -r '.version' ${context}/version.json)
+        TAGS=('latest')
+        if [ "${VERSION}" ] && [ "${VERSION}" != "latest" ]; then
+            TAGS+=("gnu_openmpi-${VERSION}")
+        fi
+        if [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
+            TAGS+=("git-gnu_openmpi-${BASH_REMATCH[1]}")
+        fi
+        ( IFS=$','; echo "${TAGS[*]}" )
+    - name: Build and publish image to Quay
+      uses: docker/build-push-action@v1
+      with:
+        path: ${{ env.context }}/gnu_openmpi
+        registry: ${{ secrets.REGISTRY_SERVER }}
+        repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.image_name }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+        tags: "gnu_openmpi-${{ steps.image_tags.outputs.IMAGE_TAGS }}"

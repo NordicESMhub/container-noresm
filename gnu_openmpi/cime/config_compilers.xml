@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config_compilers version="2.0">
+  <compiler COMPILER="gnu" MACH="container">
+    <NETCDF_PATH>/usr/local/netcdf</NETCDF_PATH>
+    <FFLAGS>
+      <append DEBUG="FALSE"> -O2 -mavx2 -mcmodel=medium -fallow-argument-mismatch -fallow-invalid-boz </append>
+      <append MODEL="blom"> -fdefault-real-8 </append>
+      <append MODEL="cice"> -finit-local-zero </append>
+    </FFLAGS>
+    <CFLAGS>
+      <append DEBUG="FALSE"> -mcmodel=medium </append>
+    </CFLAGS>
+    <PIO_FILESYSTEM_HINTS> lustre </PIO_FILESYSTEM_HINTS>
+    <SLIBS>
+      <append> -L/usr/local/netcdf/lib -lnetcdff -lnetcdf </append>
+      <append> -L/usr/local/openblas/lib -lopenblas </append>
+    </SLIBS>
+  </compiler>
+</config_compilers>

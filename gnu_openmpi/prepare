@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo $CASENAME
+
+cp -r /opt/esm/.cime/* $HOME/.cime
+sed -i -e "s/TASKS_PER_NODE>128/TASKS_PER_NODE>$SLURM_NTASKS_PER_NODE/g" $HOME/.cime/config_machines.xml
+
+cd /opt/esm/my_sandbox/cime/scripts
+./create_newcase --case /opt/esm/archive/cases/$CASENAME --compset $COMPSET --res $RES --machine container --run-unsupported --handle-preexisting-dirs r --pesfile /opt/esm/archive/auto_config_pes.xml
+
+cd /opt/esm/archive/cases/$CASENAME
+
+./xmlchange STOP_N=1
+./xmlchange STOP_OPTION=nmonths
+
+ln -s /usr/bin/make gmake
+export PATH=$PATH:$PWD
+
+./case.setup
+./case.build --skip-provenance-check
+
+mkdir -p /opt/esm/work/$CASENAME/run/timing/checkpoints
+
+./check_input_data --download
+./check_case
+
