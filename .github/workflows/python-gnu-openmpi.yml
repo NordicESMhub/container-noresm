@@ -27,7 +27,7 @@ jobs:
     - name: Create Dockerfile with hpccm
       working-directory: ./gnu_openmpi
       run: |
-        hpccm --recipe v3-noresm204_gnu102_openmpi410_slurm20116.py --format docker > Dockerfile
+        hpccm --recipe noresm_gnu_openmpi_slurm.py --format docker > Dockerfile
     - name: Get image tags
       id: image_tags
       run: |
