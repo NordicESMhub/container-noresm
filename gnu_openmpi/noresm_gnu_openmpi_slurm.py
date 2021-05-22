@@ -15,7 +15,7 @@ Stage0 += apt_get(ospackages=['librdmacm-dev'])
 Stage0 += ucx(version='1.10.0', cuda=False,  configure_opts=['--enable-optimizations', '--with-rdmacm'])
 
 # PMI2
-Stage0 += slurm_pmi2(version='20.11.6')
+Stage0 += slurm_pmi2(version='20.11.7')
 
 # OPENMPI
 mpi = openmpi(version='4.1.0', cuda=False, infiniband=True, pmi='/usr/local/slurm-pmi2', 
