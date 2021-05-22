@@ -43,11 +43,10 @@ jobs:
         ( IFS=$','; echo "${TAGS[*]}" )
     - name: Build and publish image to Quay
       uses: docker/build-push-action@v1
-      working-directory: ./gnu_mpich
       with:
         path: ${{ env.context }}
         registry: ${{ secrets.REGISTRY_SERVER }}
-        repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.image_name }}-gnu_mpich
+        repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.image_name }}
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
-        tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+        tags: "gnu_mpich-${{ steps.image_tags.outputs.IMAGE_TAGS }}"
