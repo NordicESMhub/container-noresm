@@ -25,6 +25,7 @@ jobs:
       run: |
         conda env update --file environment.yml --name base
     - name: Create Dockerfile with hpccm
+      working-directory: ./gnu_mpich
       run: |
         hpccm --recipe noresm_gnu.py --format docker > Dockerfile
     - name: Get image tags
@@ -42,10 +43,11 @@ jobs:
         ( IFS=$','; echo "${TAGS[*]}" )
     - name: Build and publish image to Quay
       uses: docker/build-push-action@v1
+      working-directory: ./gnu_mpich
       with:
         path: ${{ env.context }}
         registry: ${{ secrets.REGISTRY_SERVER }}
-        repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.image_name }}
+        repository: ${{ secrets.REGISTRY_NAMESPACE }}/${{ env.image_name }}-gnu_mpich
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
         tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
