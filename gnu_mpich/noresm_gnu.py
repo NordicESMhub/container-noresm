@@ -54,7 +54,7 @@ Stage0 += shell(commands=['sed -i -e "s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" 
 Stage0 += environment(variables={'USER': 'ubuntu', 'LANG': 'en_US.UTF-8', 'LANGUAGE': 'en_US:en', 'LC_ALL': 'en_US.UTF-8'})
 
 # Copy  configuration files, and prepare/execute scripts into the container
-Stage0 += copy(src='.cime/*', dest='/opt/esm/.cime/')
+Stage0 += copy(src='cime/*', dest='/opt/esm/.cime/')
 Stage0 += copy(src='config_pes.xml', dest='/opt/esm/')
 Stage0 += copy(src='prepare', dest='/opt/esm/')
 Stage0 += copy(src='execute', dest='/opt/esm/')
