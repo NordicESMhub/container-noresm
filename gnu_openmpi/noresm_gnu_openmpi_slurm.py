@@ -2,7 +2,7 @@
 Stage0 += baseimage(image='ubuntu:20.04')
 
 # GNU compilers
-compiler = gnu(version='10')
+compiler = gnu()
 Stage0 += compiler
 
 # OpenBLAS
@@ -19,8 +19,7 @@ Stage0 += slurm_pmi2(version='20.11.7')
 
 # OPENMPI
 mpi = openmpi(version='4.1.0', cuda=False, infiniband=True, pmi='/usr/local/slurm-pmi2', 
-                      configure_opts=['FFLAGS=-fallow-argument-mismatch', 'FCFLAGS=-fallow-argument-mismatch',
-                      '--with-ucx=/usr/local/ucx', '--with-hwloc=internal', '--with-libevent=internal'], toolchain=compiler.toolchain)
+                      configure_opts=['--with-ucx=/usr/local/ucx', '--with-hwloc=internal', '--with-libevent=internal'], toolchain=compiler.toolchain)
 Stage0 += mpi
 
 # HDF5

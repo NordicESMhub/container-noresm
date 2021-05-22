@@ -3,7 +3,7 @@
   <compiler COMPILER="gnu" MACH="container">
     <NETCDF_PATH>/usr/local/netcdf</NETCDF_PATH>
     <FFLAGS>
-      <append DEBUG="FALSE"> -O2 -mavx2 -mcmodel=medium -fallow-argument-mismatch -fallow-invalid-boz </append>
+      <append DEBUG="FALSE"> -O2 -mavx2 -mcmodel=medium</append>
       <append MODEL="blom"> -fdefault-real-8 </append>
       <append MODEL="cice"> -finit-local-zero </append>
     </FFLAGS>
