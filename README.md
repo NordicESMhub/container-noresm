@@ -45,7 +45,7 @@ The previous command generates `container-noresm_gnu_mpich-v3.0.0.sif` that is r
 
 ### Create NorESM case, compile and prepare input data
 
-We will be using [Betzy](https://documentation.sigma2.no/hpc_machines/betzy.html), the most powerful supercomputer in Norway (2021) and prepare a case for running on one single node e.g. 128 processors. 
+We will be using [Betzy](https://documentation.sigma2.no/hpc_machines/betzy.html), the most powerful supercomputer in Norway (2021) and prepare a case for running on nodes with 128 processors per node. 
 
 The creation, setup and compilation of the case as well as a check of the availability of the necessary of the input data can be done interactively on an interactive node on Betzy. All NorESM/CESM input data can be found in `/cluster/shared/noresm/inputdata` and this is why we are binding this folder to  `/opt/esm/inputdata`. We also want to make sure we can access both the work and archive directories so these two folders are bound to `$USERWORK/work` and `$USERWORK/archive`, respectively. Please note that at this stage only the work directory will be used.
 
@@ -53,7 +53,7 @@ For simplicity and reproducibility, we have put both prepare (preparation of Nor
 
 The script `run-all.bash` is creating automatically all the SLURM batch jobs for each case e.g. number of nodes from 1 to 8 and members from 1 to 10). All the jobs are also submitted by `run-all.bash`.
 
-Below is an example of a SLURM batch job for 8 nodes and an ensemble member (here number 10):
+Below is an example of a SLURM batch job for 8 nodes (128 processors per node) and one member (here number 10) of an ensemble run (one SLURM job is submitted per member for NorESM when running in ensemble mode):
 
 ```
 #!/bin/bash
@@ -87,11 +87,11 @@ mpirun -np $SLURM_NTASKS singularity exec --bind /opt/uio/noresm-sc2021/work:/op
 
 ```
 
-An example of the script `prepare` is available in the container (and also in this repository).
+An example of the script `prepare` is available in the containers (and also in this repository).
 
 Once finalized, the results of your norESM run is available on betzy in `$USERWORK/archive`.
 
 The timing information (including model cost, throughput, etc.) can be found in a folder called `timing` in the case directory.
 
-All the timings corresponding to the execution of `run-all.bash` can be found in the Github repository [https://github.com/NordicESMhub/noresm-containers-timings](https://github.com/NordicESMhub/noresm-containers-timings) and the folder called `timings`.
+All the timings corresponding to the execution of `run-all.bash` have been copied to another repository and can be found in the Github repository [https://github.com/NordicESMhub/noresm-containers-timings](https://github.com/NordicESMhub/noresm-containers-timings) and the folder called `timings`.
 
