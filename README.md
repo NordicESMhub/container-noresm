@@ -12,7 +12,9 @@ We use [HPC Container Maker](https://github.com/NVIDIA/hpc-container-maker)  (HP
  hpccm --recipe noresm_gnu.py --format docker > Dockerfile
 ```
 
-## Docker container
+## Docker containers
+
+#### GNU MPICH and OpenMPI containers
 
 The docker GNU containers (GNU-MPICH & GNU-OpenMPI) are automatically generated (github actions) and pushed to [quay.io](https://quay.io/):
 
@@ -26,16 +28,51 @@ or
 docker pull quay.io/nordicesmhub/container-noresm:gnu_openmpi-v3.0.0
 ```
 
-To generate containers with Intel compilers, you would need to have an Intel Compiler license. The default
-license file is called `license.lic` and can be changed by editing `Dockerfile` (check folders called `intel_mpich` and `intel_openmpi` of this Github repository).
+#### Intel MPICH and OpenMPI containers
 
-An Intel License is also necessary for running these containers as the NorESM code is being recompiled every time (for each compset and resolution).
+To generate containers with Intel compilers, you would need to have an Intel Compiler license. The default
+license file is called `license.lic` and can be changed by editing `Dockerfile` (check folders called `intel_mpich` and `intel_openmpi` of this Github repository). For creating the containers, first clone this repository:
+
+```
+git clone https://github.com/NordicESMhub/container-noresm
+```
+
+Then change directory:
+
+```
+cd container-noresm
+```
+
+##### Intel OpenMPI container
+
+To successfully build a container with Intel Compiler and OpenMPI, please add your Intel Compiler license (`license.lic`) in the `intel-openmpi` folder:
+
+```
+cd intel-openmpi
+
+docker build . -t  quay.io/nordicesmhub/container-noresm:intel_openmpi-v3.0.0
+```
+
+##### Intel MPICH container
+
+To successfully build a container with Intel Compiler and MPICH, please add your Intel Compiler license (`license.lic`) in the `intel-mpich` folder:
+
+```
+cd intel-mpich
+
+docker build . -t  quay.io/nordicesmhub/container-noresm:intel_mpich-v3.0.0
+```
+
+### Creating and building NorESM containers with Intel compilers
+
+An **Intel License is also necessary for running these containers** as the NorESM code is being recompiled every time (depends on the each compset, resolution, number of processors and number of processors per node).
+
 
 ## Singularity container
 
 ### Pull singularity container
 
-We can then pull the image to generate a singularity image:
+To pull the image from quay.io and generate a singularity image:
 
 ```
 singularity pull docker://quay.io/nordicesmhub/container-noresm:gnu_mpich-v3.0.0
@@ -47,7 +84,7 @@ The previous command generates `container-noresm_gnu_mpich-v3.0.0.sif` that is r
 
 We will be using [Betzy](https://documentation.sigma2.no/hpc_machines/betzy.html), the most powerful supercomputer in Norway (2021) and prepare a case for running on nodes with 128 processors per node. 
 
-The creation, setup and compilation of the case as well as a check of the availability of the necessary of the input data can be done interactively on an interactive node on Betzy. All NorESM/CESM input data can be found in `/cluster/shared/noresm/inputdata` and this is why we are binding this folder to  `/opt/esm/inputdata`. We also want to make sure we can access both the work and archive directories so these two folders are bound to `$USERWORK/work` and `$USERWORK/archive`, respectively. Please note that at this stage only the work directory will be used.
+The creation, setup and compilation of the case as well as a check of the availability of the necessary of the input data can be done interactively on an interactive node (here on Betzy). On Betzy, all NorESM/CESM input data can be found in `/cluster/shared/noresm/inputdata` and this is why we are binding this folder to  `/opt/esm/inputdata`. However, input data can be downloaded automatically when preparing the case (`prepare` script) according your machine has an access to internet to download data (by default via `wget`).  We also want to make sure we can access both the work and archive directories so these two folders are bound to `$USERWORK/work` and `$USERWORK/archive`, respectively. `USERWORK` is an environment variable that is predefined on Betzy; if running on another platform, make sure to define this environment variable yourself. Please note that at this stage only the work directory will be used.
 
 For simplicity and reproducibility, we have put both prepare (preparation of NorESM use case e.g. compilation) and execution scripts in the same batch job.
 
@@ -91,7 +128,6 @@ An example of the script `prepare` is available in the containers (and also in t
 
 Once finalized, the results of your norESM run is available on betzy in `$USERWORK/archive`.
 
-The timing information (including model cost, throughput, etc.) can be found in a folder called `timing` in the case directory.
+The timing information (including model cost, throughput, etc.) can be found in a folder called `timing` in the case directory. 
 
-All the timings corresponding to the execution of `run-all.bash` have been copied to another repository and can be found in the Github repository [https://github.com/NordicESMhub/noresm-containers-timings](https://github.com/NordicESMhub/noresm-containers-timings) and the folder called `timings`.
 
