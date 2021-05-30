@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config_compilers version="2.0">
+  <compiler COMPILER="intel" MACH="intel-container">
+    <NETCDF_PATH>/usr/local/netcdf</NETCDF_PATH>
+    <FFLAGS>
+       <append DEBUG="FALSE"> -O2 -mcmodel=medium -xavx2 -no-fma </append>
+       <append MODEL="blom"> -r8 </append>
+       <append MODEL="cice"> -init=zero,arrays </append>
+    </FFLAGS>
+    <CFLAGS>
+      <append DEBUG="FALSE"> -mcmodel=medium </append>
+    </CFLAGS>
+     <SFC> ifort </SFC>
+     <SCC> icc </SCC>
+     <SCXX> icpc </SCXX>
+     <MPICC> mpicc </MPICC>
+     <MPICXX> mpicxx </MPICXX>
+     <MPIFC> mpifort </MPIFC>
+    <PIO_FILESYSTEM_HINTS> lustre </PIO_FILESYSTEM_HINTS>
+    <SLIBS>
+      <append> -L/usr/local/netcdf/lib -lnetcdff -lnetcdf </append>
+       <append> -mkl=sequential </append>
+    </SLIBS>
+  </compiler>
+</config_compilers>
